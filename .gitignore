@@ -1,0 +1,26 @@
+# Data
+data/raw/*
+data/processed/*
+data/splits/*
+
+# Models / weights
+models/**/checkpoints/*
+*.pt
+*.pth
+*.h5
+
+# Numpy / pickles
+*.npy
+*.npz
+*.pkl
+
+# Python
+__pycache__/
+*.pyc
+
+# Notebooks checkpoints
+.ipynb_checkpoints
+
+# Logs
+logs/
+results/
