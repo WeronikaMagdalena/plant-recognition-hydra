@@ -1,4 +1,4 @@
-# 🌿 Plant Recognition — Multi-Head Architecture (Hydra)
+# Plant Recognition — Multi-Head Architecture (Hydra) 🌿
 
 A plant species recognition system using a shared ResNet50 backbone and three different classifier heads:  
 - **Decision Tree**  
@@ -9,7 +9,7 @@ This architecture allows each team member to design and evaluate their own class
 
 ---
 
-## 🚀 Project Overview
+## Project Overview
 
 This project performs **plant species classification** using a hybrid approach:
 
@@ -24,7 +24,7 @@ This modular architecture is nicknamed **Hydra** because of its single backbone 
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 plant-recognition-multihead/
@@ -53,7 +53,7 @@ plant-recognition-multihead/
 
 ---
 
-## 🔧 Installation
+## Installation
 
 Clone the repository:
 
@@ -70,7 +70,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🧬 Feature Extraction (ResNet50)
+## Feature Extraction (ResNet50)
 
 Run this script to generate the **2048-dim embeddings**:
 
@@ -89,9 +89,9 @@ These embeddings are used by all three classifier heads.
 
 ---
 
-## 🤖 Classifier Heads
+## Classifier Heads
 
-### 1️⃣ Decision Tree  
+### Decision Tree  
 Developed by **Weronika Wójcik**  
 Training script:
 
@@ -99,17 +99,17 @@ Training script:
 python models/decision_tree/train_dt.py
 ```
 
-### 2️⃣ SVM  
+### SVM  
 Developed by **Filip Skibidiński**
 
-### 3️⃣ MLP  
+### MLP  
 Developed by **Adam Waligórski**
 
 Each head reads the same embeddings and outputs its own model + metrics.
 
 ---
 
-## 📊 Results
+## Results
 
 All results, plots, metrics, and comparisons are stored in:
 
@@ -126,7 +126,7 @@ Subfolders:
 
 ---
 
-## 🧪 Notebooks
+## Notebooks
 
 Exploration, visualizations, and experiments are in:
 
@@ -136,7 +136,7 @@ notebooks/
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 | Student | Component |
 |--------|-----------|
@@ -146,20 +146,21 @@ notebooks/
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License**.  
 See the `LICENSE` file for details.
 
 ---
 
-## ⭐ Acknowledgements
+## Acknowledgements
 
 - ResNet50 implementation from PyTorch / TensorFlow
 - Original plant dataset ([dataset source](https://www.kaggle.com/datasets/datajameson/planclef
 )<img width="1067" height="88" alt="image" src="https://github.com/user-attachments/assets/a4d09f1f-d853-4e0b-9441-480a49666f6d" />
 )
 - Hydra nickname inspired by the multi-head architecture
+
 
 
 
