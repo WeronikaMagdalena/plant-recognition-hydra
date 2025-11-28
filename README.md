@@ -103,7 +103,7 @@ python models/decision_tree/train_dt.py
 Developed by **Filip Skibidiński**
 
 ### MLP  
-Developed by **Adam Waligórski**
+Developed by **Adam Wielogórski**
 
 Each head reads the same embeddings and outputs its own model + metrics.
 
@@ -142,7 +142,7 @@ notebooks/
 |--------|-----------|
 | Weronika Wójcik | Decision Tree Head |
 | Filip Skibiński | SVM Head |
-| Adam Waligórski | MLP Head |
+| Adam Wielogórski | MLP Head |
 
 ---
 
@@ -160,6 +160,7 @@ See the `LICENSE` file for details.
 )<img width="1067" height="88" alt="image" src="https://github.com/user-attachments/assets/a4d09f1f-d853-4e0b-9441-480a49666f6d" />
 )
 - Hydra nickname inspired by the multi-head architecture
+
 
 
 
