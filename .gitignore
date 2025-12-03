@@ -24,3 +24,6 @@ __pycache__/
 # Logs
 logs/
 results/
+testing/
+training/
+validation/

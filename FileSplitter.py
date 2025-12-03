@@ -12,14 +12,22 @@ import shutil
 
 train_dir = Path("training/")
 test_dir = Path("testing/")
+validation_dir = Path("validation/")
 
 folders_path_list = [p for p in train_dir.iterdir()]
 for folder in folders_path_list:
-    amount_of_files_training = len(os.listdir(folder)) * 0.8
-    for i, img_path in enumerate(os.listdir(folder)):
-        if i >= amount_of_files_training:
+    files = os.listdir(folder) 
+    val_end = int(len(files) * 0.1)
+    test_end = val_end + int(len(files) * 0.2)
+    for i, img_path in enumerate(files):
+        if i < val_end:
+            os.makedirs(validation_dir.joinpath(folder.name), exist_ok=True)
+            shutil.move(train_dir.joinpath(folder.name).joinpath(img_path), validation_dir.joinpath(folder.name))
+        elif val_end <= i < test_end:
             os.makedirs(test_dir.joinpath(folder.name), exist_ok=True)
             shutil.move(train_dir.joinpath(folder.name).joinpath(img_path), test_dir.joinpath(folder.name))
+        else:
+            continue
 
 
 

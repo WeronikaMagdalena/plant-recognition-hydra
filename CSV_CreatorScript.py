@@ -13,6 +13,7 @@ from tqdm import tqdm
 
 train_dir = Path("training/")
 test_dir = Path("testing/")
+validation_dir = Path("validation/")
 
 # -------------------- Transforms --------------------
 transform = transforms.Compose([
@@ -26,11 +27,13 @@ transform = transforms.Compose([
 ])
 
 # -------------------- Dataset and Loader --------------------
-train_path = Path("training/")
-test_path = Path("testing/")
+train_dir = Path("training/")
+test_dir = Path("testing/")
+validation_dir = Path("validation/")
 
-data_train = ImageFolder(train_path, transform=transform)
-data_test = ImageFolder(test_path, transform=transform)
+data_train = ImageFolder(train_dir, transform=transform)
+data_test = ImageFolder(test_dir, transform=transform)
+data_validation = ImageFolder(validation_dir, transform=transform)
 
 batch_size = 32 
 train_loader = DataLoader(
@@ -42,6 +45,13 @@ train_loader = DataLoader(
 
 test_loader = DataLoader(
     data_test, 
+    batch_size=batch_size, 
+    shuffle=False, 
+    num_workers=4, 
+)
+
+validation_loader = DataLoader(
+    data_validation, 
     batch_size=batch_size, 
     shuffle=False, 
     num_workers=4, 
@@ -60,7 +70,7 @@ if __name__ == '__main__':
     all_labels = []
 
     with torch.inference_mode():  # Disable gradient calculation for inference
-        for images, labels in tqdm(test_loader, desc="Processing images"):
+        for images, labels in tqdm(train_loader, desc="Processing images"):
             embeddings = model(images)
             all_embeddings.append(embeddings.numpy())
             all_labels.append(labels.numpy())
@@ -73,7 +83,7 @@ if __name__ == '__main__':
     result['label'] = all_labels
 
     # Save to CSV
-    result.to_csv("Test.csv", index=False)
+    result.to_csv("Train.csv", index=False)
 
 
 
