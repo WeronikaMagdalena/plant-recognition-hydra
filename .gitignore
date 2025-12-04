@@ -8,7 +8,7 @@ models/**/checkpoints/*
 *.pt
 *.pth
 *.h5
-
+*.csv
 # Numpy / pickles
 *.npy
 *.npz
