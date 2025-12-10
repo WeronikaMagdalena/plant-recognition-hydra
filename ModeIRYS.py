@@ -14,34 +14,38 @@ class EmbeddingDataset(Dataset):
     def __init__(self, csv_path):
         df = pd.read_csv(csv_path)
 
-        self.X = df.iloc[:, :-1].values.astype(np.float32)   # all embedding columns
-        self.y = df.iloc[:, -1].values.astype(np.int64)    # labels
-        
-        self.num_classes = int(self.y.max() + 1)  
+        self.X = df.iloc[:, 1:-1].values.astype(np.float32)
+
+        label_col = df.iloc[:, -1]
+        unique_labels = sorted(label_col.unique())
+        self.label_map = {lbl: i for i, lbl in enumerate(unique_labels)}
+
+        self.y = label_col.map(self.label_map).values.astype(np.int64)
+
+        self.num_classes = len(unique_labels) 
 
     def __len__(self):
         return len(self.X)
 
     def __getitem__(self, idx):
-        return torch.tensor(self.X[idx]), torch.tensor(self.y[idx])
+        return self.X[idx], self.y[idx]
 
-train_path = Path("training/")
-test_path = Path("testing/")
-validation_path = Path("/validation")
 
-train_data = EmbeddingDataset("Train.csv")
-test_data = EmbeddingDataset("Test.csv")
-val_data = EmbeddingDataset("Validation.csv")
-
+train_data = EmbeddingDataset("Iris.csv")
 NUM_CLASSES_TRAIN = train_data.num_classes
-NUM_CLASSES_TEST = test_data.num_classes
-NUM_CLASSES_VALIDATION = val_data.num_classes
-INPUT_DIM = 2048
+INPUT_DIM = 4
+train_loader = DataLoader(train_data, batch_size=4, shuffle=True)
 
-train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
-test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
-val_loader = DataLoader(val_data, batch_size=32, shuffle=False)
-
+# To see the first batch of data
+first_batch = next(iter(train_loader))
+X_batch, y_batch = first_batch
+print("Features shape:", X_batch.shape)
+print("First batch features:", X_batch)
+print("First batch labels:", y_batch)
+# To see the underlying dataset
+print("Number of samples:", len(train_loader.dataset))
+print("Number of features:", train_loader.dataset.X.shape[1])
+print("Number of classes:", train_loader.dataset.num_classes)
 
 def initParams(input_dim, num_classes):
     w1 = np.random.rand(1536, input_dim) - 0.5
