@@ -24,3 +24,6 @@ __pycache__/
 # Logs
 logs/
 results/
+/embeddings/Test.csv
+/embeddings/Train.csv
+/embeddings/Validation.csv
