@@ -4,6 +4,7 @@ def entropy(y):
     if len(y) == 0:
         return 0.0
 
+    # Improve this:
     _, counts = np.unique(y, return_counts=True)
     probabilities = counts / counts.sum()
 
@@ -34,8 +35,20 @@ def information_gain(parent, left, right):
 
     return parent_entropy - children_entropy
 
-# split_information(left, right)
-#
+
+def split_information(left, right):
+    n_left = len(left)
+    n_right = len(right)
+    n_total = n_left + n_right
+
+    if n_total == 0:
+        return 0.0
+
+    p_left = n_left / n_total
+    p_right = n_right / n_total
+
+    return - (p_left * np.log2(p_left) + p_right * np.log2(p_right))
+
 # gain_ratio(parent, left, right)
 #
 # split_dataset(X, y, feature, threshold)
@@ -44,9 +57,8 @@ def information_gain(parent, left, right):
 #
 # should_stop(y, depth, max_depth, min_samples)
 
-y_parent = np.array([0, 0, 1, 1, 1])
-y_left   = np.array([0, 0, 1])
-y_right  = np.array([1, 1])
+y_left = np.array([0, 1])
+y_right = np.array([1, 1, 1, 1, 1, 0, 0, 1])
 
-ig = information_gain(y_parent, y_left, y_right)
-print(ig)
+si = split_information(y_left, y_right)
+print(si)
