@@ -4,7 +4,6 @@ def entropy(y):
     if len(y) == 0:
         return 0.0
 
-    # Improve this:
     _, counts = np.unique(y, return_counts=True)
     probabilities = counts / counts.sum()
 
@@ -49,16 +48,49 @@ def split_information(left, right):
 
     return - (p_left * np.log2(p_left) + p_right * np.log2(p_right))
 
-# gain_ratio(parent, left, right)
-#
-# split_dataset(X, y, feature, threshold)
-#
-# majority_class(y)
-#
-# should_stop(y, depth, max_depth, min_samples)
 
-y_left = np.array([0, 1])
-y_right = np.array([1, 1, 1, 1, 1, 0, 0, 1])
+def gain_ratio(parent, left, right):
+    ig = information_gain(parent, left, right)
+    si = split_information(left, right)
 
-si = split_information(y_left, y_right)
-print(si)
+    if si == 0.0:
+        return 0.0
+
+    return ig / si
+
+
+def split_dataset(X, y, feature, threshold):
+    # arrays of trues and falses to deterimine by index
+    left_indices = X[:, feature] <= threshold
+    right_indices = X[:, feature] > threshold
+
+    # back to whole embeddings (X) and labels (y)
+    X_left = X[left_indices]
+    y_left = y[left_indices]
+    X_right = X[right_indices]
+    y_right = y[right_indices]
+
+    return X_left, y_left, X_right, y_right
+
+
+def majority_class(y):
+    if len(y) == 0:
+        return None
+    values, counts = np.unique(y, return_counts=True)
+    majority_index = np.argmax(counts)
+    return values[majority_index]
+
+
+def should_stop(y, depth, max_depth, min_samples):
+    # Stop if all labels are the same
+    if len(np.unique(y)) == 1:
+        return True
+
+    if depth >= max_depth:
+        return True
+
+    # Stop if not enough samples to split
+    if len(y) < min_samples:
+        return True
+
+    return False
