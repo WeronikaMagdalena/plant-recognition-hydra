@@ -46,7 +46,11 @@ def split_information(left, right):
     p_left = n_left / n_total
     p_right = n_right / n_total
 
-    return - (p_left * np.log2(p_left) + p_right * np.log2(p_right))
+    return -sum(
+        p * np.log2(p)
+        for p in (p_left, p_right)
+        if p > 0
+    )
 
 
 def gain_ratio(parent, left, right):
