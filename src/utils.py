@@ -2,7 +2,7 @@ import numpy as np
 import logging
 
 logging.basicConfig(
-    level=logging.INFO,  # change to DEBUG for full trace
+    level=logging.INFO,  # DEBUG for full trace
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 

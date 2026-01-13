@@ -9,7 +9,6 @@ def find_best_split(X, y, n_bins=8, max_evals=5000):
     best_feature = None
     best_threshold = None
 
-    # --- feature subsampling (huge speedup) ---
     n_sub_features = max(1, int(np.sqrt(n_features)))
     feature_indices = np.random.choice(
         n_features, n_sub_features, replace=False

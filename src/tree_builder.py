@@ -1,6 +1,6 @@
 import logging
-from src.best_split import find_best_split
-from src.node import Node
+from best_split import find_best_split
+from node import Node
 from utils import should_stop, majority_class, split_dataset
 
 logger = logging.getLogger(__name__)
