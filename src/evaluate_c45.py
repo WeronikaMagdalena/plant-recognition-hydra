@@ -5,15 +5,15 @@ from tree_builder import build_tree
 from predict import predict
 
 # ============================================================
-# 🔧 CONFIGURATION
+# CONFIGURATION
 # ============================================================
-N_CLASSES_TO_USE = 2      # None = use all classes
-MAX_DEPTH = 6
-MIN_SAMPLES = 20
+N_CLASSES_TO_USE = 3        # None = all
+MAX_DEPTH_CANDIDATES = [4, 6, 8]
+MIN_SAMPLES_CANDIDATES = [10, 20]
 RANDOM_STATE = 42
 
 # ============================================================
-# 📥 Load dataset
+# Load dataset
 # ============================================================
 df = pd.read_csv("../embeddings/balanced.csv")
 
@@ -31,96 +31,102 @@ classes = np.unique(y)
 n_classes = len(classes)
 
 # ============================================================
-# 🔀 Train / Test split
+# Train / Val / Test split (70 / 15 / 15)
 # ============================================================
 rng = np.random.default_rng(RANDOM_STATE)
 indices = rng.permutation(len(y))
 
-split = int(0.8 * len(y))
-train_idx = indices[:split]
-test_idx  = indices[split:]
+n_total = len(y)
+n_train = int(0.7 * n_total)
+n_val   = int(0.15 * n_total)
+
+train_idx = indices[:n_train]
+val_idx   = indices[n_train:n_train + n_val]
+test_idx  = indices[n_train + n_val:]
 
 X_train, y_train = X[train_idx], y[train_idx]
+X_val, y_val     = X[val_idx], y[val_idx]
 X_test, y_test   = X[test_idx], y[test_idx]
 
+print(f"Train: {len(y_train)} | Val: {len(y_val)} | Test: {len(y_test)}")
+
 # ============================================================
-# 🌳 Train tree
+# Hyperparameter selection (VALIDATION)
 # ============================================================
+best_score = -1
+best_params = None
+
+for max_depth in MAX_DEPTH_CANDIDATES:
+    for min_samples in MIN_SAMPLES_CANDIDATES:
+
+        tree = build_tree(
+            X_train,
+            y_train,
+            max_depth=max_depth,
+            min_samples=min_samples
+        )
+
+        y_val_pred = predict(X_val, tree)
+        val_accuracy = np.mean(y_val_pred == y_val)
+
+        print(
+            f"Val accuracy (depth={max_depth}, min_samples={min_samples}): "
+            f"{val_accuracy:.4f}"
+        )
+
+        if val_accuracy > best_score:
+            best_score = val_accuracy
+            best_params = (max_depth, min_samples)
+
+print("\nBest validation params:", best_params)
+print("Best validation accuracy:", best_score)
+
+# ============================================================
+# Retrain on Train + Validation
+# ============================================================
+X_train_full = np.vstack([X_train, X_val])
+y_train_full = np.concatenate([y_train, y_val])
+
 tree = build_tree(
-    X_train,
-    y_train,
-    max_depth=MAX_DEPTH,
-    min_samples=MIN_SAMPLES
+    X_train_full,
+    y_train_full,
+    max_depth=best_params[0],
+    min_samples=best_params[1]
 )
 
 # ============================================================
-# 🔮 Predict
+# Final evaluation on TEST
 # ============================================================
-y_pred = predict(X_test, tree)
+y_test_pred = predict(X_test, tree)
+test_accuracy = np.mean(y_test_pred == y_test)
 
-accuracy = np.mean(y_pred == y_test)
-print(f"\nOverall accuracy: {accuracy:.4f}")
+print(f"\nFINAL TEST ACCURACY: {test_accuracy:.4f}")
 
 # ============================================================
-# 📊 Confusion Matrix (MANUAL)
+# Confusion Matrix
 # ============================================================
 label_to_index = {label: i for i, label in enumerate(classes)}
 conf_matrix = np.zeros((n_classes, n_classes), dtype=int)
 
-for true, pred in zip(y_test, y_pred):
+for true, pred in zip(y_test, y_test_pred):
     conf_matrix[label_to_index[true], label_to_index[pred]] += 1
 
 print("\nConfusion matrix shape:", conf_matrix.shape)
-
-# 🔍 Print small preview (top-left corner)
-preview_size = min(5, n_classes)
-print("\nConfusion matrix preview:")
-print(conf_matrix[:preview_size, :preview_size])
+print(conf_matrix[:min(5, n_classes), :min(5, n_classes)])
 
 # ============================================================
-# 📈 Per-class accuracy
-# ============================================================
-per_class_acc = {}
-
-for cls in classes:
-    idx = label_to_index[cls]
-    correct = conf_matrix[idx, idx]
-    total = conf_matrix[idx].sum()
-    per_class_acc[cls] = correct / total if total > 0 else 0.0
-
-mean_class_acc = np.mean(list(per_class_acc.values()))
-print("\nMean per-class accuracy:", mean_class_acc)
-
-# ============================================================
-# 📋 Per-class accuracy (Top 10 and Bottom 10)
-# ============================================================
-sorted_acc = sorted(
-    per_class_acc.items(),
-    key=lambda x: x[1],
-    reverse=True
-)
-
-print("\nTop 10 classes by accuracy:")
-for cls, acc in sorted_acc[:10]:
-    print(f"Class {cls}: {acc:.4f}")
-
-print("\nBottom 10 classes by accuracy:")
-for cls, acc in sorted_acc[-10:]:
-    print(f"Class {cls}: {acc:.4f}")
-
-# ============================================================
-# 🌳 Tree statistics
+# Tree statistics
 # ============================================================
 def count_nodes(node):
     if node is None:
         return 0
-    return 1 + count_nodes(node.left) + count_nodes(node.right)
+    return count_nodes(node.left) + count_nodes(node.right)
 
 def tree_depth(node):
     if node is None or node.is_leaf_node():
         return 1
-    return 1 + max(tree_depth(node.left), tree_depth(node.right))
+    return max(tree_depth(node.left), tree_depth(node.right))
 
 print("\nTree statistics:")
 print("Total nodes:", count_nodes(tree))
-print("Max depth :", tree_depth(tree))
+print("Max depth :", tree_depth(tree) - 1)
