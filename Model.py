@@ -6,32 +6,75 @@ from pathlib import Path
 
 
 # ---------------------- CONFIG ----------------------
-EPOCHS = 100
-LR = 0.01
+EPOCHS = 10
+LR = 0.05
+
+def filter_and_balance(X, y, min_samples_per_class=50, random_state=42):
+    rng = np.random.default_rng(random_state)
+
+    # Step 1: filter out small classes
+    classes, counts = np.unique(y, return_counts=True)
+    valid_classes = classes[counts >= min_samples_per_class]
+
+    mask = np.isin(y, valid_classes)
+    X_filtered = X[mask]
+    y_filtered = y[mask]
+
+    # Step 2: balance remaining classes
+    classes, counts = np.unique(y_filtered, return_counts=True)
+    min_count = counts.min()
+
+    X_balanced = []
+    y_balanced = []
+
+    for cls in classes:
+        idx = np.where(y_filtered == cls)[0]
+        selected = rng.choice(idx, size=min_count, replace=False)
+        X_balanced.append(X_filtered[selected])
+        y_balanced.append(y_filtered[selected])
+
+    X_balanced = np.vstack(X_balanced)
+    y_balanced = np.concatenate(y_balanced)
+
+    # Shuffle
+    perm = rng.permutation(len(y_balanced))
+    return X_balanced[perm], y_balanced[perm]
 
 # -------------------- Dataset and Loader --------------------
 class EmbeddingDataset(Dataset):
-    def __init__(self, csv_path):
-        df = pd.read_csv(csv_path)
-
-        self.X = df.iloc[:, :-1].values.astype(np.float32)   # all embedding columns
-        self.y = df.iloc[:, -1].values.astype(np.int64)    # labels
-        
-        self.num_classes = int(self.y.max() + 1)  
-
+    def __init__(self, csv_path=None, X=None, y=None):
+        if csv_path is not None:
+            df = pd.read_csv(csv_path)
+            self.X = df.iloc[:, :-1].values.astype(np.float32)
+            self.y = df.iloc[:, -1].values.astype(np.int64)
+        else:
+            self.X = X
+            self.y = y
+            
+        self.num_classes = int(self.y.max() + 1) if len(self.y) > 0 else 0
     def __len__(self):
         return len(self.X)
-
     def __getitem__(self, idx):
         return torch.tensor(self.X[idx]), torch.tensor(self.y[idx])
 
-train_path = Path("training/")
-test_path = Path("testing/")
-validation_path = Path("/validation")
+train_df = pd.read_csv("Train.csv")
+X_train = train_df.iloc[:, :-1].values
+y_train = train_df.iloc[:, -1].values
 
-train_data = EmbeddingDataset("Train.csv")
+X_balanced, y_balanced = filter_and_balance(
+    X=X_train,
+    y=y_train,
+    min_samples_per_class=50,
+    random_state=42
+)
+
+print(X_balanced.shape)
+print(y_balanced.shape)
+
+train_data = EmbeddingDataset(X=X_balanced, y=y_balanced)
 test_data = EmbeddingDataset("Test.csv")
 val_data = EmbeddingDataset("Validation.csv")
+
 
 NUM_CLASSES_TRAIN = train_data.num_classes
 NUM_CLASSES_TEST = test_data.num_classes
@@ -53,7 +96,7 @@ def initParams(input_dim, num_classes):
     return w1, b1, w2, b2, w3, b3
 
 def ReLU(Z):
-    return np.maximum(Z, 0)
+    return np.maximum(Z, 0) 
 
 def Softmax(Z):
     Z_shifted = Z - np.max(Z, axis=0, keepdims=True)
@@ -110,7 +153,11 @@ def getPredictions(A3):
     return np.argmax(A3, 0)
 
 def getAccuracy(predictions, Y):
-    print(predictions, Y)
+    print('Predictions: \n')
+    print(predictions)
+    print('\n')
+    print('Labels: \n')
+    print(Y)
     return np.sum(predictions == Y) / Y.size
 
 def train_custom_nn(train_loader, iterations, alpha):
@@ -127,87 +174,17 @@ def train_custom_nn(train_loader, iterations, alpha):
             dW1, db1, dW2, db2, dW3, db3 = backPropagation(Z1, A1, Z2, A2, Z3, A3, W3, W2, X_np, Y_np)
             W1, B1, W2, B2, W3, B3 = updateParams(W1, B1, W2, B2, W3, B3,dW1, db1, dW2, db2, dW3, db3, alpha)
 
-        print(f"Epoch {epoch+1}/{iterations}")
+        print(f"=== Epoch {epoch+1}/{iterations} ===")
         predictions = getPredictions(A3)
+        
         acc = getAccuracy(predictions, Y_np)
         print("  Accuracy:", acc)
 
     return W1, B1, W2, B2, W3, B3
 
 
-W1, B1, W2, B2, W3, B3 = train_custom_nn(train_loader, 100, alpha=LR)
-
-
-
-# Sprawdź na datasecie Iris czy to działa w ogóle
-
-
-
-# Plan jest taki -> przepuść tensor [3, 224, 224] przez model (spłaszczony do vectora 3x224x224 size), return 2048 embeddings
-# 2048 Embeddings -> przepuść przez NN i wypluj klasyfikację
-# NN -> Input 2048 -> Hidden 1536 -> Hidden 1200 -> Output 1000 (bo 1000 klas w datasecie)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# -------------------- Optimizer & Loss --------------------
-# optimizer = torch.optim.Adam(model.fc.parameters(), lr=LR)
-# criterion = nn.BCELoss()  # We'll apply mask manually
-# scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2, verbose=True)
-
-# -------------------- Training Loop --------------------
-# for epoch in range(EPOCHS):
-#   model.train()
-#    epoch_loss = 0
-#    batches = 0
-#
-#    for img, label in data_train:
-#        if label is None:
-#            continue
-#
-#        optimizer.zero_grad()
-#        outputs = model(img)
-#        loss = criterion(outputs, label)
-#        loss.backward()
-#        optimizer.step()
-#
-#    if batches > 0:
-#        avg_loss = epoch_loss / batches
-#        print(f"Epoch {epoch+1}/{EPOCHS} - Loss: {avg_loss:.4f}")
-#        scheduler.step(avg_loss)
-#    else:
-#        print(f"Epoch {epoch+1}: No valid data processed.")
-
+W1, B1, W2, B2, W3, B3 = train_custom_nn(train_loader, EPOCHS, alpha=LR)
+W1, B1, W2, B2, W3, B3 = train_custom_nn(test_loader, EPOCHS, alpha=LR)
 
 
 

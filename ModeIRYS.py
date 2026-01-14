@@ -7,7 +7,7 @@ from pathlib import Path
 
 # ---------------------- CONFIG ----------------------
 EPOCHS = 100
-LR = 0.01
+LR = 0.001
 
 # -------------------- Dataset and Loader --------------------
 class EmbeddingDataset(Dataset):
@@ -114,10 +114,12 @@ def getPredictions(A3):
     return np.argmax(A3, 0)
 
 def getAccuracy(predictions, Y):
-    print(predictions, Y)
+    print(f"Predictions: {predictions}\n", f"Labels: {Y}")
     return np.sum(predictions == Y) / Y.size
 
+
 def train_custom_nn(train_loader, iterations, alpha):
+    totalAcc = 0;
     W1, B1, W2, B2, W3, B3 = initParams(INPUT_DIM, NUM_CLASSES_TRAIN)
 
     for epoch in range(iterations):  
@@ -135,21 +137,15 @@ def train_custom_nn(train_loader, iterations, alpha):
         predictions = getPredictions(A3)
         acc = getAccuracy(predictions, Y_np)
         print("  Accuracy:", acc)
+        totalAcc += acc
+    
+    print("Total accuracy:", (totalAcc / 100) * 100, "%")
 
     return W1, B1, W2, B2, W3, B3
 
 
 W1, B1, W2, B2, W3, B3 = train_custom_nn(train_loader, 100, alpha=LR)
 
-
-
-# Sprawdź na datasecie Iris czy to działa w ogóle
-
-
-
-# Plan jest taki -> przepuść tensor [3, 224, 224] przez model (spłaszczony do vectora 3x224x224 size), return 2048 embeddings
-# 2048 Embeddings -> przepuść przez NN i wypluj klasyfikację
-# NN -> Input 2048 -> Hidden 1536 -> Hidden 1200 -> Output 1000 (bo 1000 klas w datasecie)
 
 
 
