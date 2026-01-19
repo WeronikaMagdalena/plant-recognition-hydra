@@ -4,7 +4,7 @@ class Node:
         self.threshold = threshold      # Threshold value for the split
         self.left = left
         self.right = right
-        self.value = value              # Class label if leaf node
+        self.value = value
 
     def is_leaf_node(self):
         return self.value is not None
