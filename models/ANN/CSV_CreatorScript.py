@@ -1,12 +1,10 @@
 import torch
 import torch.nn as nn
 import torchvision.models as models
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 from torchvision import transforms
-from PIL import Image
 import pandas as pd
 import numpy as np
-import os
 from pathlib import Path
 from torchvision.datasets import ImageFolder
 from tqdm import tqdm
