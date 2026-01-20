@@ -65,72 +65,6 @@ pip install -r requirements.txt
 
 ---
 
-## Feature Extraction (ResNet50)
-
-Run this script to generate the **2048-dim embeddings**:
-
-```bash
-python scripts/extract_embeddings.py
-```
-
-This will populate:
-
-```
-embeddings/train/
-embeddings/test/
-```
-
-These embeddings are used by all three classifier heads.
-
----
-
-## Classifier Heads
-
-### Decision Tree  
-Developed by **Weronika Wójcik**  
-Training script:
-
-```bash
-python models/decision_tree/train_dt.py
-```
-
-### SVM  
-Developed by **Filip Skibidiński**
-
-### MLP  
-Developed by **Adam Wielogórski**
-
-Each head reads the same embeddings and outputs its own model + metrics.
-
----
-
-## Results
-
-All results, plots, metrics, and comparisons are stored in:
-
-```
-results/
-```
-
-Subfolders:
-
-- `dt/`
-- `svm/`
-- `mlp/`
-- `comparisons/`
-
----
-
-## Notebooks
-
-Exploration, visualizations, and experiments are in:
-
-```
-notebooks/
-```
-
----
-
 ## Contributors
 
 | Student | Component |
@@ -139,22 +73,6 @@ notebooks/
 | Filip Skibiński | SVM Head |
 | Adam Wielogórski | ANN Head |
 
----
-
-## License
-
-This project is licensed under the **MIT License**.  
-See the `LICENSE` file for details.
-
----
-
-## Acknowledgements
-
-- ResNet50 implementation from PyTorch / TensorFlow
-- Original plant dataset ([dataset source](https://www.kaggle.com/datasets/datajameson/planclef
-)<img width="1067" height="88" alt="image" src="https://github.com/user-attachments/assets/a4d09f1f-d853-4e0b-9441-480a49666f6d" />
-)
-- Hydra nickname inspired by the multi-head architecture
 
 
 
