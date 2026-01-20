@@ -41,6 +41,8 @@ plant-recognition-hydra/
 │
 ├── presentation/
 │
+├── requirements.txt
+│
 └── README.md
 ```
 
@@ -153,6 +155,7 @@ See the `LICENSE` file for details.
 )<img width="1067" height="88" alt="image" src="https://github.com/user-attachments/assets/a4d09f1f-d853-4e0b-9441-480a49666f6d" />
 )
 - Hydra nickname inspired by the multi-head architecture
+
 
 
 
