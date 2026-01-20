@@ -1,5 +1,5 @@
 import numpy as np
-from src.tree.impurity_logic import gain_ratio
+from models.DECISION_TREE.src.tree.impurity_logic import gain_ratio
 
 def find_best_split(X, y, n_bins=8, max_evals=5000, rng=None):
     n_samples, n_features = X.shape

@@ -3,7 +3,7 @@ import pandas as pd
 
 from config import *
 from tree.builder import build_tree
-from src.tree.predictor import predict
+from models.DECISION_TREE.src.tree.predictor import predict
 from metrics import *
 from stats import *
 from tree.post_prunning import post_prune

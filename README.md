@@ -3,7 +3,7 @@
 A plant species recognition system using a shared ResNet50 backbone and three different classifier heads:  
 - **Decision Tree**  
 - **Support Vector Machine (SVM)**  
-- **Multi-Layer Perceptron (MLP)**  
+- **Artificial Neural Network (ANN)**  
 
 This architecture allows each team member to design and evaluate their own classifier head while using a common feature extractor.
 
@@ -17,7 +17,7 @@ This project performs **plant species classification** using a hybrid approach:
 2. These embeddings serve as input to three independent classifier heads:
    - Decision Tree (DT)
    - Support Vector Machine (SVM)
-   - Multi-Layer Perceptron (MLP)
+   - Artificial Neural Network (ANN)
 3. Each classifier is trained, evaluated, and compared on the same embedding dataset.
 
 This modular architecture is nicknamed **Hydra** because of its single backbone and multiple heads.
@@ -27,11 +27,9 @@ This modular architecture is nicknamed **Hydra** because of its single backbone 
 ## Repository Structure
 
 ```
-plant-recognition-multihead/
+plant-recognition-hydra/
 │
 ├── embeddings/
-│   ├── train/                
-│   ├── test/
 │   └── info.txt
 │
 ├── models/
@@ -39,16 +37,13 @@ plant-recognition-multihead/
 │   │   └── resnet50.py
 │   ├── decision_tree/
 │   ├── svm/
-│   └── mlp/
+│   └── ann/
 │
-├── notebooks/
+├── presentation/
 │
-├── results/
-│
-├── .gitignore
 ├── requirements.txt
-├── README.md
-└── LICENSE
+│
+└── README.md
 ```
 
 ---
@@ -142,7 +137,7 @@ notebooks/
 |--------|-----------|
 | Weronika Wójcik | Decision Tree Head |
 | Filip Skibiński | SVM Head |
-| Adam Wielogórski | MLP Head |
+| Adam Wielogórski | ANN Head |
 
 ---
 
@@ -160,6 +155,8 @@ See the `LICENSE` file for details.
 )<img width="1067" height="88" alt="image" src="https://github.com/user-attachments/assets/a4d09f1f-d853-4e0b-9441-480a49666f6d" />
 )
 - Hydra nickname inspired by the multi-head architecture
+
+
 
 
 

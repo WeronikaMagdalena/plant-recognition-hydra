@@ -1,9 +1,9 @@
 import logging
 import numpy as np
-from src.tree.node import Node
-from src.tree.best_split import find_best_split
-from src.tree.splitter import split_dataset, majority_class
-from src.tree.pre_prunning import should_stop
+from models.DECISION_TREE.src.tree.node import Node
+from models.DECISION_TREE.src.tree.best_split import find_best_split
+from models.DECISION_TREE.src.tree.splitter import split_dataset, majority_class
+from models.DECISION_TREE.src.tree.pre_prunning import should_stop
 
 logger = logging.getLogger(__name__)
 

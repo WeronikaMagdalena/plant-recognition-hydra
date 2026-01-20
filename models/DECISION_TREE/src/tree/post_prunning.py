@@ -1,6 +1,6 @@
-from src.tree.predictor import predict
-from src.tree.splitter import majority_class
-from src.tree.node import Node
+from models.DECISION_TREE.src.tree.predictor import predict
+from models.DECISION_TREE.src.tree.splitter import majority_class
+from models.DECISION_TREE.src.tree.node import Node
 import numpy as np
 
 def post_prune(tree, X_val, y_val):
