@@ -27,11 +27,9 @@ This modular architecture is nicknamed **Hydra** because of its single backbone 
 ## Repository Structure
 
 ```
-plant-recognition-multihead/
+plant-recognition-hydra/
 │
 ├── embeddings/
-│   ├── train/                
-│   ├── test/
 │   └── info.txt
 │
 ├── models/
@@ -41,14 +39,11 @@ plant-recognition-multihead/
 │   ├── svm/
 │   └── mlp/
 │
-├── notebooks/
+├── presentation/
 │
-├── results/
-│
-├── .gitignore
 ├── requirements.txt
-├── README.md
-└── LICENSE
+│
+└── README.md
 ```
 
 ---
@@ -160,6 +155,7 @@ See the `LICENSE` file for details.
 )<img width="1067" height="88" alt="image" src="https://github.com/user-attachments/assets/a4d09f1f-d853-4e0b-9441-480a49666f6d" />
 )
 - Hydra nickname inspired by the multi-head architecture
+
 
 
 
